@@ -29,7 +29,10 @@ fn main() {
                     window.set_view(&camera);
                 },
                 Event::MouseButtonPressed { button, x, y } => {
-                    some_button.poll_event(button, x, y);
+                    some_button.event_press(button, x, y);
+                },
+                Event::MouseButtonReleased { button, x, y } => {
+                    some_button.event_release(button, x, y);
                 },
                 _ => {}
             }
@@ -40,7 +43,7 @@ fn main() {
         if some_button.is_hovered() {
             //println!("Hovered");
         }
-        if some_button.is_down() {
+        if some_button.is_pressed() {
             println!("Pressed");
         }
 

@@ -19,9 +19,10 @@ pub struct Button {
 
 pub trait TButton {
     fn new(x: i32, y: i32, width: i32, height: i32, text: String, color: Color, hover_color: Color, pressed_color: Color, text_color: Color) -> Button;
-    fn draw(&self, window: &mut RenderWindow);
+    fn draw(&mut self, window: &mut RenderWindow);
     fn update(&mut self, mouse_pos: Vector2i);
-    fn poll_event(&self, button: sfml::window::mouse::Button, x :i32, y: i32);
+    fn event_press(&mut self, button: sfml::window::mouse::Button, x :i32, y: i32);
+    fn event_release(&mut self, button: sfml::window::mouse::Button, x :i32, y: i32);
     fn is_pressed(&self) -> bool;
     fn is_hovered(&self) -> bool;
     fn is_down(&self) -> bool;
@@ -45,7 +46,7 @@ impl TButton for Button {
         }
     }
 
-    fn draw(&self, window: &mut RenderWindow) {
+    fn draw(&mut self, window: &mut RenderWindow) {
         let mut rect = sfml::graphics::RectangleShape::new();
         rect.set_size((self.width as f32, self.height as f32));
         rect.set_position((self.x as f32, self.y as f32));
@@ -57,6 +58,8 @@ impl TButton for Button {
 
         window.draw(&rect);
         window.draw(&text);
+        
+        self.pressed = false
     }
 
     fn update(&mut self, mouse_pos: Vector2i) {
@@ -73,8 +76,16 @@ impl TButton for Button {
         }
     }
 
-    fn poll_event(&self, button: sfml::window::mouse::Button, x :i32, y: i32) {
-       println!("{} {}", x, y);
+    fn event_press(&mut self, button: sfml::window::mouse::Button, x :i32, y: i32) {
+        if button == sfml::window::mouse::Button::Left && x > self.x && x < self.x + self.width && y > self.y && y < self.y + self.height {
+            self.pressed = true;
+        }
+    }
+
+    fn event_release(&mut self, button: sfml::window::mouse::Button, x :i32, y: i32) {
+        if button == sfml::window::mouse::Button::Left && x > self.x && x < self.x + self.width && y > self.y && y < self.y + self.height {
+            self.pressed = false;
+        }
     }
 
     fn is_down(&self) -> bool {
